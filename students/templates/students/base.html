@@ -20,7 +20,9 @@
 		<div class="row" id="header">
 			<!-- LOGO -->
 			<div class="col-xs-8">
-				<h1>Сервiс облiку студентiв</h1>
+				{% block logo %}
+					<h1>Сервiс облiку студентiв</h1>
+				{% endblock logo %}
 			</div>
 
 			<!-- GROUPS SELECTOR -->
@@ -38,13 +40,16 @@
 		<!-- Start subheader -->
 		<div class="row" id="sub-header">
 			<div class="col-xs-12">
-				<ul class="nav nav-tabs" role="tablist">
-					{% url 'home' as students_url %}
-					{% url 'groups' as groups_url %}
-					<li role="presentation" {% if request.path == students_url %}class="active"{% endif %}><a href="{% url "home" %}">Студенти</a></li>
-					<li role="presentation" {% if request.path == "/journal" %}class="active"{% endif %}><a href="{{PORTAL_URL}}">Вiдвiдування</a></li>
-					<li role="presentation" {% if request.path == groups_url %}class="active"{% endif %}><a href="{% url 'groups' %}">Групи</a></li>
-				</ul>
+				{% block menu %}
+					<ul class="nav nav-tabs" role="tablist">
+						{% url 'home' as students_url %}
+						{% url 'groups' as groups_url %}
+						{% url 'journal' as journal_url %}
+						<li role="presentation" {% if request.path == students_url %}class="active"{% endif %}><a href="{% url "home" %}">Студенти</a></li>
+						<li role="presentation" {% if request.path == "/journal" %}class="active"{% endif %}><a href="{% url "journal" %}">Вiдвiдування</a></li>
+						<li role="presentation" {% if request.path == groups_url %}class="active"{% endif %}><a href="{% url 'groups' %}">Групи</a></li>
+					</ul>
+				{% endblock menu %}
 			</div>
 		</div>
 		<!-- End subheader -->
@@ -65,11 +70,13 @@
 		<!-- End main page content -->
 
 		<!-- Start footer -->
-		<div class="row" id="footer">
-			<div class="col-xs-12">
-				&copy; 2016 Сервiс облiку стундентiв
-			</div>
-		</div>
+		{% block footer %}
+			<div class="row" id="footer">
+				<div class="col-xs-12">
+					&copy; 2016 Сервiс облiку стундентiв
+				</div>
+			</div>	
+		{% endblock footer %}
 		<!-- End footer -->
 	</div>
 	<!-- End container -->

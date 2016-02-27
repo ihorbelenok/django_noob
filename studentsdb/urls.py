@@ -42,5 +42,7 @@ urlpatterns = [
         groups.groups_delete,
         name='groups_delete'),
 
+    url(r'^journal$', journal.journal, name='journal'),
+
     url(r'^admin/', admin.site.urls),
 ]
