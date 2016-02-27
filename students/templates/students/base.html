@@ -1,0 +1,79 @@
+{% load static from staticfiles %}
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+	<meta charset="UTF-8"/>
+	<title>Сервiс облiку студентiв - {% block meta_title %} {% endblock meta_title %}</title>
+	<meta name="description"
+			value="Система облiку студентiв навчального закладу"/>
+	<!-- Include Styles -->
+	<link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+	<link rel="stylesheet" href="{% static "css/main.css" %}">
+	{% block extra_css %} {% endblock extra_css %}
+	
+</head>
+<body>
+	<!-- Start container -->
+	<div class="container">
+		<!-- Start header -->
+		<div class="row" id="header">
+			<!-- LOGO -->
+			<div class="col-xs-8">
+				<h1>Сервiс облiку студентiв</h1>
+			</div>
+
+			<!-- GROUPS SELECTOR -->
+			<div class="col-xs-4" id="group-selector">
+				<strong>Група:</strong>
+				<select>
+					<option value="">Усi студенти</option>
+					<option value="">МтМ - 21, Подоба В. (№254)</option>
+					<option value="">МтМ - 22, Корост А. (№2123)</option>
+				</select>
+			</div>
+		</div>
+		<!-- End header -->
+
+		<!-- Start subheader -->
+		<div class="row" id="sub-header">
+			<div class="col-xs-12">
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="active"><a href="{% url "home" %}">Студенти</a></li>
+					<li role="presentation"><a href="/journal">Вiдвiдування</a></li>
+					<li role="presentation"><a href="{% url 'groups' %}">Групи</a></li>
+				</ul>
+			</div>
+		</div>
+		<!-- End subheader -->
+
+		<!-- Start main page content -->
+		<div class="row" id="content-columns">
+			<div class="col-xs-12" id="content-column">
+				{% comment "not used yet" %}
+					<div class="alert alert-warning">Змiни скасовано.</div>
+					<!-- Status message -->	
+				{% endcomment %}				
+
+				<h2>{% block title %} {% endblock title %}</h2>
+				{% block content %} {% endblock content %}
+				
+			</div>
+		</div>
+		<!-- End main page content -->
+
+		<!-- Start footer -->
+		<div class="row" id="footer">
+			<div class="col-xs-12">
+				&copy; 2016 Сервiс облiку стундентiв
+			</div>
+		</div>
+		<!-- End footer -->
+	</div>
+	<!-- End container -->
+
+	<!-- Javascripts Inclusion -->
+	<script src="{% static 'js/jquery-2.2.1.min.js' %}"></script>
+  	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+</html>
