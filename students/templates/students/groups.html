@@ -22,10 +22,11 @@
 						</tr>
 					</thead>
 					<tbody>
+						{% for group in groups %}
 						<tr>
-							<td>1</td>
-							<td><a title="Редагувати" href="{% url "groups_edit" 1 %}">МтМ-21</a></td>
-							<td><a title="Редагувати" href="{% url "groups_edit" 1 %}">Ячменев Олег</a></td>
+							<td>{{ forloop.counter }}</td>
+							<td><a title="Редагувати" href="{% url "groups_edit" group.id %}">{{ group.name }}</a></td>
+							<td><a title="Редагувати" href="{% url "groups_edit" group.id %}">{{ group.leader }}</a></td>
 							<td>
 								<div class="dropdown">
 									<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"> Дiя
@@ -33,64 +34,19 @@
 									</button>
 									<ul class="dropdown-menu" role="menu">
 										<li role="presentation">
-											<a role="menuitem" tabindex="-1" href="{% url "groups_edit" 1 %}">Редагувати</a>
+											<a role="menuitem" tabindex="-1" href="{% url "groups_edit" group.id %}">Редагувати</a>
 										</li>
 										<li role="presentation">
-											<a role="menuitem" tabindex="-1" href="{% url "groups_delete" 1 %}">Видалити</a>
+											<a role="menuitem" tabindex="-1" href="{% url "groups_delete" group.id %}">Видалити</a>
 										</li>
 									</ul>
 								</div>
 							</td>
-						</tr>
-						<tr>
-							<td>2</td>
-							<td><a title="Редагувати" href="{% url "groups_edit" 2 %}">МтМ-22</a></td>
-							<td><a title="Редагувати" href="{% url "groups_edit" 2 %}">Вiталiй Подоба</a></td>
-							<td>
-								<div class="dropdown">
-									<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"> Дiя
-										<span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu" role="menu">
-										<li role="presentation">
-											<a role="menuitem" tabindex="-1" href="{% url "groups_edit" 2 %}">Редагувати</a>
-										</li>
-										<li role="presentation">
-											<a role="menuitem" tabindex="-1" href="{% url "groups_delete" 2 %}">Видалити</a>
-										</li>
-									</ul>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>3</td>
-							<td><a title="Редагувати" href="{% url "groups_edit" 3 %}">МтМ-23</a></td>
-							<td><a title="Редагувати" href="{% url "groups_edit" 3 %}">Iванов Андрiй</a></td>
-							<td>
-								<div class="dropdown">
-									<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"> Дiя
-										<span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu" role="menu">
-										<li role="presentation">
-											<a role="menuitem" tabindex="-1" href="{% url "groups_edit" 3 %}">Редагувати</a>
-										</li>
-										<li role="presentation">
-											<a role="menuitem" tabindex="-1" href="{% url "groups_delete" 3 %}">Видалити</a>
-										</li>
-									</ul>
-								</div>
-							</td>
-						</tr>
+						</tr>	
+						{% endfor %}
 					</tbody>
 				</table>
 
-				<nav>
-					<ul class="pagination">
-						<li class="active"><a href="#">1</a></li>
-						<li><a href="#">2</a></li>
-						<li><a href="#">Далi</a></li>
-					</ul>
-				</nav>
+				{% include "students/pagination.html" %}
 				<!-- End groups listing -->
 {% endblock content %}

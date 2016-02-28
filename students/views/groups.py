@@ -3,8 +3,20 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
+
 def groups_list(request):
-    return render(request, 'students/groups.html', {})
+    groups = (
+        {'id': 1,
+         'name': u'МтМ-21',
+         'leader': u'Іваненко Іван', },
+        {'id': 2,
+         'name': u'МтМ-22',
+         'leader': u'Петренко Петро', },
+        {'id': 3,
+         'name': u'МтМ-23',
+         'leader': u'Доу Джон', },
+    )
+    return render(request, 'students/groups.html', {"groups": groups})
 
 
 def groups_add(request):

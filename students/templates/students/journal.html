@@ -19,60 +19,21 @@
 			<tr>
 				<th>#</th>
 				<th>Студент</th>
-				<th>Пн 1</th>
-				<th>Вт 2</th>
-				<th>Ср 3</th>
-				<th>Чт 4</th>
-				<th>Пт 5</th>
-				<th>Сб 6</th>
-				<th>Нд 7</th>
-				<th>Пн 8</th>
-				<th>Вт 9</th>
-				<th>Ср 10</th>
-				<th>Чт 11</th>
-				<th>Пт 12</th>
-				<th>Сб 13</th>
-				<th>Нд 14</th>
-				<th>Пн 15</th>
-				<th>Вт 16</th>
-				<th>Ср 17</th>
-				<th>Чт 18</th>
-				<th>Пт 19</th>
-				<th>Сб 20</th>
-				<th>Нд 21</th>
-				<th>Пн 22</th>
-				<th>Вт 23</th>
-				<th>Ср 24</th>
-				<th>Чт 25</th>
-				<th>Пт 26</th>
-				<th>Сб 27</th>
-				<th>Нд 28</th>
-				<th>Пн 29</th>
-			</tr>
-			<tr>
-				<td>1</td>
-				<td><a href="{% url "students_edit" 1 %}">Iван Iваненко</a></td>
-				{% for i in monthrange %}
-					<td><input type="checkbox"></input></td>	
-				{% endfor %}
-			</tr>
-			<tr>
-				<td>2</td>
-				<td><a href="{% url "students_edit" 2 %}">Петро Петренко</a></td>
-				{% for i in monthrange %}
-					<td><input type="checkbox"></input></td>	
-				{% endfor %}
-			</tr>
-			<tr>
-				<td>3</td>
-				<td><a href="{% url "students_edit" 1 %}">Джон Доу</a></td>
-				{% for i in monthrange %}
-					<td><input type="checkbox"></input></td>	
+				{% for day in days %}
+				<th>{{ day }}</th>	
 				{% endfor %}
 			</tr>
 		</thead>
-		<tbody>
-			
+		<tbody>	
+			{% for student in students %}
+				<tr>
+					<td>{{ forloop.counter }}</td>
+					<td><a href="{% url "students_edit" student.id %}"> {{ student.first_name }} {{ student.first_name }}</a></td>
+					{% for day in days %}
+						<td><input type="checkbox"></input></td>	
+					{% endfor %}
+				</tr>	
+			{% endfor %}
 		</tbody>
 	</table>
 {% endblock content %}
