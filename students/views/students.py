@@ -1,28 +1,16 @@
 # -*- coding: utf-8 -*-
- 
+
 from django.shortcuts import render
 from django.http import HttpResponse
+from ..models import Student
+from studentsdb.settings import MEDIA_ROOT
 
 
 # Students views
 def students_list(request):
-    students = (
-        {'id': 1,
-         'first_name': u'Іван',
-         'last_name': u'Іваненко',
-         'card': 235,
-         'image': 'img/face-angel.png'},
-        {'id': 2,
-         'first_name': u'Петро',
-         'last_name': u'Петренко',
-         'card': 2123,
-         'image': 'img/face-cool.png'},
-        {'id': 3,
-         'first_name': u'Джон',
-         'last_name': u'Доу',
-         'card': 123,
-         'image': 'img/face-devilish.png'},
-    )
+    print MEDIA_ROOT
+
+    students = Student.objects.all()
     return render(request,
                   'students/students_list.html',
                   {'students': students})
