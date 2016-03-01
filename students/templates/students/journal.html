@@ -8,9 +8,9 @@
 
 {% block content %}
 	<center>
-		<a href="">&larr;</a>
-		{% now "F Y" %}
-		<a href="">&rarr;</a>
+		<a href="{% url "journal" %}?page={{ current_page }}&amp;month={% if month = 1 %}12&amp;year={{ year|add:"-1" }}{% else %}{{ month|add:"-1" }}&amp;year={{ year }}{% endif %}">&larr;</a>
+		{{ monthyear }}
+		<a href="{% url "journal" %}?page={{ current_page }}&amp;month={% if month = 12 %}1&amp;year={{ year|add:"1" }}{% else %}{{ month|add:"1" }}&amp;year={{ year }}{% endif %}">&rarr;</a>
 	</center>
 
 	<!-- Start students listing -->
@@ -25,15 +25,29 @@
 			</tr>
 		</thead>
 		<tbody>	
-			{% for student in students %}
+			{% for jd in journaldata %}
 				<tr>
 					<td>{{ forloop.counter }}</td>
-					<td><a href="{% url "students_edit" student.id %}"> {{ student.first_name }} {{ student.last_name }}</a></td>
-					{% for day in days %}
-						<td><input type="checkbox"></input></td>	
+					{# <td>{{ students.1 }}</td> #}
+					<td><a href="{% url "students_edit" jd.0 %}"> {{ jd.1 }}</a></td>
+					{% for day in jd.2 %}
+						<td><input type="checkbox" {% if day %}checked{% endif%}></input></td>	
 					{% endfor %}
 				</tr>	
 			{% endfor %}
 		</tbody>
 	</table>
+	<!-- Start pagination -->
+	{% if pages|length > 1 %}
+	<nav>
+	    <ul class="pagination">
+	        <li><a href="{% url "journal" %}?page=1&amp;month={{ month }}&amp;year={{ year }}">&laquo;</a></li>
+	        {% for page in pages %}
+	        	<li {% if current_page == page %}class="active"{% endif %}><a href="{% url "journal" %}?page={{ page }}&amp;month={{ month }}&amp;year={{ year }}">{{ page }}</a></li>	
+	        {% endfor %}
+	        <li><a href="{% url "journal" %}?page={{ pages|length }}&amp;month={{ month }}&amp;year={{ year }}">&raquo;</a></li>
+	    </ul>
+	</nav>
+	{% endif %}
+	<!-- End pagination -->
 {% endblock content %}

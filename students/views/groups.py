@@ -17,7 +17,6 @@ def groups_list(request):
         groups = groups.reverse()
 
     # paginate groups
-    # paginate students
     per_page = 3
     total_pages = -(-len(groups) // per_page)
     page_string = request.GET.get('page')
