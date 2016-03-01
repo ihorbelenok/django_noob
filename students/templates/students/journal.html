@@ -27,7 +27,7 @@
 		<tbody>	
 			{% for jd in journaldata %}
 				<tr>
-					<td>{{ forloop.counter }}</td>
+					<td>{{ pageindex|add:forloop.counter }}</td>
 					{# <td>{{ students.1 }}</td> #}
 					<td><a href="{% url "students_edit" jd.0 %}"> {{ jd.1 }}</a></td>
 					{% for day in jd.2 %}

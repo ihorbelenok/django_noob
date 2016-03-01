@@ -32,7 +32,7 @@ def groups_list(request):
                   'students/groups.html',
                   {"groups": groups,
                    'pages': range(1, total_pages + 1),
-                   'current_page': current_page})
+                   'pageindex': (current_page - 1) * per_page})
 
 
 def groups_add(request):

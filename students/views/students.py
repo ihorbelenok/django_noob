@@ -32,7 +32,8 @@ def students_list(request):
                   'students/students_list.html',
                   {'students': students,
                    'pages': range(1, total_pages + 1),
-                   'current_page': current_page})
+                   'current_page': current_page,
+                   'pageindex': (current_page - 1) * per_page})
 
 
 def students_add(request):

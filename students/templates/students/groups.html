@@ -25,7 +25,7 @@
 					<tbody>
 						{% for group in groups %}
 						<tr>
-							<td>{{ forloop.counter }}</td>
+							<td>{{ pageindex|add:forloop.counter }}</td>
 							<td><a title="Редагувати" href="{% url "groups_edit" group.id %}">{{ group.title }}</a></td>
 							<td><a title="Редагувати" href="{% url "groups_edit" group.id %}">{{ group.leader }}</a></td>
 							<td>

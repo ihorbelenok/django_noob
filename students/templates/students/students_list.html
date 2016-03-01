@@ -27,7 +27,7 @@
 					<tbody>
 						{% for student in students %}
 							<tr>
-								<td>{{ forloop.counter }}</td>
+								<td>{{ pageindex|add:forloop.counter }}</td>
 								<td>
 								{% if student.photo %}
 								<img height="30" width="30" src="{{student.photo.url}}" 

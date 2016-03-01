@@ -70,5 +70,5 @@ def journal(request):
                    'month': month,
                    'monthyear': months[month-1]+' '+str(year),
                    'pages': range(1, total_pages + 1),
-                   'current_page': current_page
-                   })
+                   'current_page': current_page,
+                   'pageindex': (current_page - 1) * per_page})
