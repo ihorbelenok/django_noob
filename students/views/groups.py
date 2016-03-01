@@ -2,7 +2,7 @@
 
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+# from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from ..models.groups import Group
 
 
@@ -16,19 +16,24 @@ def groups_list(request):
     if request.GET.get('reverse', '') == '1':
         groups = groups.reverse()
 
-    #paginate groups
-    paginator = Paginator(groups, 3)
-    page = request.GET.get('page')
+    # paginate groups
+    # paginate students
+    per_page = 3
+    total_pages = -(-len(groups) // per_page)
+    page_string = request.GET.get('page')
+    current_page = 1
     try:
-        groups = paginator.page(page)
-    except PageNotAnInteger:
-        #if page not integer - return first page
-        groups = paginator.page(1)
-    except EmptyPage:
-        #if page > num_pages - return last page
-        groups = paginator.page(paginator.num_pages)
-
-    return render(request, 'students/groups.html', {"groups": groups})
+        current_page = int(page_string)
+    except (ValueError, TypeError):
+        # if page not integer - return first page
+        current_page = 1
+    current_page = max(1, min(total_pages, current_page))
+    groups = groups[(current_page - 1) * per_page:current_page * per_page]
+    return render(request,
+                  'students/groups.html',
+                  {"groups": groups,
+                   'pages': range(1, total_pages + 1),
+                   'current_page': current_page})
 
 
 def groups_add(request):
