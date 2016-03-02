@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from students.views import students, groups, journal
+from students.views import students, groups, journal, exams, examresults
 from .settings import MEDIA_URL, MEDIA_ROOT, DEBUG
 from django.conf.urls.static import static
 
@@ -32,7 +32,7 @@ urlpatterns = [
         students.students_delete,
         name='students_delete'),
 
-    # students urls
+    # groups urls
     url(r'^groups$', groups.groups_list, name='groups'),
     url(r'^groups/add/$',
         groups.groups_add,
@@ -43,6 +43,30 @@ urlpatterns = [
     url(r'^groups/(?P<gid>\d+)/delete/$',
         groups.groups_delete,
         name='groups_delete'),
+
+    # exams urls
+    url(r'^exams$', exams.exams_list, name='exams'),
+    url(r'^exams/add/$',
+        exams.exams_add,
+        name='exams_add'),
+    url(r'^exams/(?P<eid>\d+)/edit/$',
+        exams.exams_edit,
+        name='exams_edit'),
+    url(r'^exams/(?P<eid>\d+)/delete/$',
+        exams.exams_delete,
+        name='exams_delete'),
+
+    # exam results urls
+    url(r'^examresults$', examresults.examresults_list, name='examresults'),
+    url(r'^examresults/add/$',
+        examresults.examresults_add,
+        name='examresults_add'),
+    url(r'^examresults/(?P<rid>\d+)/edit/$',
+        examresults.examresults_edit,
+        name='examresults_edit'),
+    url(r'^examresults/(?P<rid>\d+)/delete/$',
+        examresults.examresults_delete,
+        name='examresults_delete'),
 
     url(r'^journal$', journal.journal, name='journal'),
 

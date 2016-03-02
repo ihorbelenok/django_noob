@@ -1,0 +1,63 @@
+{% extends "students/base.html" %}
+
+{% load static from staticfiles %}
+
+{% block meta_title %} Іспити {% endblock meta_title %}
+
+{% block title %} Іспити {% endblock title %}
+
+{% block content %}
+
+				<!-- Add group button -->
+				<a class="btn btn-primary" href="{% url "exams_add" %}">Додати іспит</a>
+
+<!-- Start groups listing -->
+				{% with order_by=request.GET.order_by reverse=request.GET.reverse%}
+				<table class="table table-hover table-striped">
+					<thead>
+						<tr>
+							<th><a href="{% url "exams" %}?order_by=id{% if order_by == 'id' and reverse != '1' %}&amp;reverse=1{% endif %}"># {% if order_by == 'id' and reverse != '1' %}&uarr;{% elif order_by == 'id' and reverse == '1' %}&darr;{% endif %}</a></th>
+							<th><a href="{% url "exams" %}?order_by=subject{% if order_by == 'subject' and reverse != '1' %}&amp;reverse=1{% endif %}">Предмет {% if order_by == 'subject' and reverse != '1' %}&uarr;{% elif order_by == 'subject' and reverse == '1' %}&darr;{% endif %}</a></th>
+							<th><a href="{% url "exams" %}?order_by=examdate{% if order_by == 'examdate' and reverse != '1' or not order_by %}&amp;reverse=1{% endif %}">Дата, час {% if order_by == 'examdate' and reverse != '1' or not order_by%}&uarr;{% elif order_by == 'examdate' and reverse == '1' %}&darr;{% endif %}</a></th>
+							<th><a href="{% url "exams" %}?order_by=teacher{% if order_by == 'teacher' and reverse != '1' %}&amp;reverse=1{% endif %}">Викладач {% if order_by == 'teacher' and reverse != '1' %}&uarr;{% elif order_by == 'teacher' and reverse == '1' %}&darr;{% endif %}</a></th>
+							<th><a href="{% url "exams" %}?order_by=exam_group{% if order_by == 'exam_group' and reverse != '1' %}&amp;reverse=1{% endif %}">Група {% if order_by == 'exam_group' and reverse != '1' %}&uarr;{% elif order_by == 'exam_group' and reverse == '1' %}&darr;{% endif %}</a></th>
+							<th>Дii</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for exam in exams %}
+						<tr>
+							<th> {{ forloop.counter }} </th>
+							<th><a href="{% url "exams_edit" exam.id %}">{{ exam.subject }}</a></th>
+							<th><a href="{% url "exams_edit" exam.id %}">{{ exam.examdate|date:"d-m-y H:i" }}</a></th>
+							<th><a href="{% url "exams_edit" exam.id %}">{{ exam.teacher }}</a></th>
+							<th><a href="{% url "exams_edit" exam.id %}">{{ exam.exam_group.title }}</a></th>
+							<th>
+								<div class="dropdown">
+						            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"> Дiя
+						                <span class="caret"></span>
+						            </button>
+						            <ul class="dropdown-menu" role="menu">
+						                <li role="presentation">
+						                    <a role="menuitem" tabindex="-1" href="{% url "exams_edit" exam.id %}">Редагувати</a>
+						                </li>
+						                <li role="presentation">
+						                    <a role="menuitem" tabindex="-1" href="{% url "exams_delete" exam.id %}">Видалити</a>
+						                </li>
+						            </ul>
+						        </div>
+					        </th>
+					    </tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				{% endwith %}
+				<!-- End groups listing -->
+
+{% endblock content %}
+
+{% block extra_js %}
+	<script src="{% static "js/endless.js" %}"></script>
+	<script src="{% static "js/endless-pagination.js" %}"></script>
+	<script>$.endlessPaginate({paginateOnScroll: true});</script>
+{% endblock extra_js %}
