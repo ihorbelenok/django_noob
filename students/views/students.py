@@ -4,10 +4,15 @@ from django.shortcuts import render
 from django.http import HttpResponse
 #from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from ..models.students import Student
+from endless_pagination.decorators import page_template
+from endless_pagination import utils
 
 
-# Students views
-def students_list(request):
+@page_template('students/students_page.html')
+def students_list(request,
+                  template='students/students_list.html',
+                  page_template='students/students_page.html',
+                  extra_context=None):
     students = Student.objects.all().order_by('last_name')
 
     order_by = request.GET.get('order_by', '')
@@ -16,24 +21,17 @@ def students_list(request):
         if request.GET.get('reverse', '') == '1':
             students = students.reverse()
 
-    # paginate students
-    per_page = 3
-    total_pages = -(-len(students) // per_page)
-    page_string = request.GET.get('page')
-    current_page = 1
-    try:
-        current_page = int(page_string)
-    except (ValueError, TypeError):
-        # if page not integer - return first page
-        current_page = 1
-    current_page = max(1, min(total_pages, current_page))
-    students = students[(current_page - 1) * per_page:current_page * per_page]
-    return render(request,
-                  'students/students_list.html',
-                  {'students': students,
-                   'pages': range(1, total_pages + 1),
-                   'current_page': current_page,
-                   'pageindex': (current_page - 1) * per_page})
+    context = {'students': students,
+               'page_template': page_template,
+               'start_id': (utils.get_page_number_from_request(request)-1)*3,
+               'per_page': 3}
+
+    if extra_context is not None:
+        context.update(extra_context)
+    if request.is_ajax():
+        template = page_template
+
+    return render(request, template, context)
 
 
 def students_add(request):

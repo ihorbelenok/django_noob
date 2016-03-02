@@ -23,28 +23,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{% for group in groups %}
-						<tr>
-							<td>{{ pageindex|add:forloop.counter }}</td>
-							<td><a title="Редагувати" href="{% url "groups_edit" group.id %}">{{ group.title }}</a></td>
-							<td><a title="Редагувати" href="{% url "groups_edit" group.id %}">{{ group.leader }}</a></td>
-							<td>
-								<div class="dropdown">
-									<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"> Дiя
-										<span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu" role="menu">
-										<li role="presentation">
-											<a role="menuitem" tabindex="-1" href="{% url "groups_edit" group.id %}">Редагувати</a>
-										</li>
-										<li role="presentation">
-											<a role="menuitem" tabindex="-1" href="{% url "groups_delete" group.id %}">Видалити</a>
-										</li>
-									</ul>
-								</div>
-							</td>
-						</tr>	
-						{% endfor %}
+						{% include page_template %}
 					</tbody>
 				</table>
 				{% endwith %}
@@ -66,3 +45,9 @@
 				{% endif %}
 				<!-- End pagination -->
 {% endblock content %}
+
+{% block extra_js %}
+	<script src="{% static "js/endless.js" %}"></script>
+	<script src="{% static "js/endless-pagination.js" %}"></script>
+	<script>$.endlessPaginate({paginateOnScroll: true});</script>
+{% endblock extra_js %}

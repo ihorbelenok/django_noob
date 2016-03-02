@@ -1,3 +1,4 @@
 Django
 Pillow
 MySql-python
+django-endless-pagination

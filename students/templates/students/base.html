@@ -82,7 +82,8 @@
 	<!-- End container -->
 
 	<!-- Javascripts Inclusion -->
-	<script src="{{ PORTAL_URL }}{% static 'js/jquery-2.2.1.min.js' %}"></script>
+	<script src="{{ PORTAL_URL }}{% static 'js/jquery.min.js' %}"></script>
   	<script src="{{ PORTAL_URL }}{% static 'js/bootstrap.min.js' %}"></script>
+  	{% block extra_js %} {% endblock extra_js %}
 </body>
 </html>

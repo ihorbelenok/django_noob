@@ -4,9 +4,15 @@ from django.shortcuts import render
 from django.http import HttpResponse
 # from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from ..models.groups import Group
+from endless_pagination.decorators import page_template
+from endless_pagination import utils
 
 
-def groups_list(request):
+@page_template('students/groups_page.html')
+def groups_list(request,
+                template='students/groups.html',
+                page_template='students/groups_page.html',
+                extra_context=None):
     groups = Group.objects.all().order_by('title')
     order_by = request.GET.get('order_by', '')
     if order_by in ('title', 'id'):
@@ -16,23 +22,19 @@ def groups_list(request):
     if request.GET.get('reverse', '') == '1':
         groups = groups.reverse()
 
-    # paginate groups
-    per_page = 3
-    total_pages = -(-len(groups) // per_page)
-    page_string = request.GET.get('page')
-    current_page = 1
-    try:
-        current_page = int(page_string)
-    except (ValueError, TypeError):
-        # if page not integer - return first page
-        current_page = 1
-    current_page = max(1, min(total_pages, current_page))
-    groups = groups[(current_page - 1) * per_page:current_page * per_page]
+    context = {"groups": groups,
+               'page_template': page_template,
+               'start_id': (utils.get_page_number_from_request(request)-1)*3,
+               'per_page': 3}
+
+    if extra_context is not None:
+        context.update(extra_context)
+    if request.is_ajax():
+        template = page_template
+
     return render(request,
-                  'students/groups.html',
-                  {"groups": groups,
-                   'pages': range(1, total_pages + 1),
-                   'pageindex': (current_page - 1) * per_page})
+                  template,
+                  context)
 
 
 def groups_add(request):
