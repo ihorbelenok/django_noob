@@ -61,10 +61,12 @@
 		<!-- Start main page content -->
 		<div class="row" id="content-columns">
 			<div class="col-xs-12" id="content-column">
-				{% comment "not used yet" %}
-					<div class="alert alert-warning">Змiни скасовано.</div>
-					<!-- Status message -->	
-				{% endcomment %}				
+				{% block status_message %}
+					{% if request.GET.status_message %}
+						<div class="alert alert-warning" role="alert">{{ request.GET.status_message }}</div>
+					{% endif %}
+				{% endblock status_message %}
+				<!-- Status message -->	
 
 				<h2>{% block title %} {% endblock title %}</h2>
 				{% block content %} {% endblock content %}
