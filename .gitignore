@@ -4,3 +4,4 @@
 *.mo
 *.egg
 studentsdb/db.py
+studentsdb/email.py

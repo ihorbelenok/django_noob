@@ -46,12 +46,14 @@
 						{% url 'groups' as groups_url %}
 						{% url 'journal' as journal_url %}
 						{% url 'exams' as exams_url %}
-						{% url 'examresults' as examresults_url %}
+                        {% url 'examresults' as examresults_url %}
+						{% url 'contact_admin' as contact_url %}
 						<li role="presentation" {% if request.path == students_url %}class="active"{% endif %}><a href="{{ students_url }}">Студенти</a></li>
 						<li role="presentation" {% if request.path == journal_url %}class="active"{% endif %}><a href="{{ journal_url }}">Вiдвiдування</a></li>
 						<li role="presentation" {% if request.path == groups_url %}class="active"{% endif %}><a href="{{ groups_url }}">Групи</a></li>
 						<li role="presentation" {% if request.path == exams_url %}class="active"{% endif %}><a href="{{ exams_url }}">Іспити</a></li>
-						<li role="presentation" {% if request.path == examresults_url %}class="active"{% endif %}><a href="{{ examresults_url }}">Оцінки</a></li>
+                        <li role="presentation" {% if request.path == examresults_url %}class="active"{% endif %}><a href="{{ examresults_url }}">Оцінки</a></li>
+						<li role="presentation" {% if request.path == contact_url %}class="active"{% endif %}><a href="{{ contact_url }}">Контакт</a></li>
 					</ul>
 				{% endblock menu %}
 			</div>

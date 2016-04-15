@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'students',
     'endless_pagination',
+    'crispy_forms',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -120,3 +121,22 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media')
+
+# email settings
+
+ADMIN_EMAIL = 'willburninhell@gmail.com'
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+
+EMAIL_PORT = '465'
+
+from .email import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+
+EMAIL_USE_TLS = False
+
+
+EMAIL_USE_SSL = True
+
+# crispy forms settings
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'

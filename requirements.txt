@@ -2,3 +2,4 @@ Django
 Pillow
 MySql-python
 django-endless-pagination
+django-crispy-forms

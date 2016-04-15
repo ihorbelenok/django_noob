@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from students.views import students, groups, journal, exams, examresults
+from students.views import students, groups, journal, exams, examresults, contact_admin
 from .settings import MEDIA_URL, MEDIA_ROOT, DEBUG
 from django.conf.urls.static import static
 
@@ -71,6 +71,9 @@ urlpatterns = [
     url(r'^journal$', journal.journal, name='journal'),
 
     url(r'^admin/', admin.site.urls),
+
+    # contact admin form
+    url(r'^contact-admin/$', contact_admin.contact_admin, name='contact_admin'),
 ]
 
 if DEBUG:
