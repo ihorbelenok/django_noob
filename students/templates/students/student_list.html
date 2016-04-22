@@ -1,0 +1,23 @@
+{% extends "students/base.html" %}
+
+{% load staticfiles %}
+
+{% block meta_title %} Студенти {% endblock meta_title %}
+
+{% block content %}
+
+    <h2>Студенти</h2>
+
+    <ul>
+        {% for student in object_list %}
+            <li>{{ student.last_name }}</li>
+        {% endfor %}
+    </ul>
+	
+{% endblock content %}
+
+{% block extra_js %}
+	<script src="{% static "js/endless.js" %}"></script>
+	<script src="{% static "js/endless-pagination.js" %}"></script>
+	<script>$.endlessPaginate({paginateOnScroll: true});</script>
+{% endblock extra_js %}
