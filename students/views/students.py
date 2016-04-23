@@ -10,6 +10,8 @@ from endless_pagination import utils
 from datetime import datetime
 from django.core.urlresolvers import reverse
 
+from PIL import Image
+
 from django.forms import ModelForm
 from django.views.generic import ListView, UpdateView, DeleteView
 
@@ -95,7 +97,17 @@ def students_add(request):
 
             photo = request.FILES.get('photo')
             if photo:
-                data['photo'] = photo
+                try:
+                    image = Image.open(photo)
+                except Exception:
+                    errors[
+                        'photo'] = u"Завантажений файл не є файлом зображення або пошкоджений"
+                else:
+                    if photo.size > 2 * 1024 * 1024:
+                        errors[
+                            'photo'] = u"Фото занадто велике (розмір файлу має бути менше 2Мб)"
+                    else:
+                        data['photo'] = photo
 
             if not errors:
                 student = Student(**data)
