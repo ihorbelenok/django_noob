@@ -65,8 +65,13 @@
 			<div class="col-xs-12" id="content-column">
 				{% block status_message %}
 					{% if request.GET.status_message %}
-						<div class="alert alert-warning" role="alert">{{ request.GET.status_message }}</div>
+						<div class="alert alert-warning" role="alert">УБЕРИ СТАТУС МЕССЭДЖ ЧЕРЕЗ ГЕТ!!!</div>
 					{% endif %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{% if message.tags == 'warning' %}warning{% elif message.tags == 'success' %}success{% else %}danger{% endif %}" role="alert">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
 				{% endblock status_message %}
 				<!-- Status message -->	
 

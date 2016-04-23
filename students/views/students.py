@@ -9,6 +9,7 @@ from endless_pagination.decorators import page_template
 from endless_pagination import utils
 from datetime import datetime
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 
 from PIL import Image
 
@@ -115,13 +116,15 @@ def students_add(request):
             if not errors:
                 student = Student(**data)
                 student.save()
-                return HttpResponseRedirect(u'%s?status_message=Студента "%s" успішно додано!' % (reverse('home'), student))
+                messages.success(request, u'Студента "%s" успішно додано!' % student)
+                return HttpResponseRedirect(reverse('home'))
             else:
                 return render(request, 'students/students_add.html',
                               {'groups': Group.objects.all().order_by('title'),
                                'errors': errors})
         elif request.POST.get('cancel_button') is not None:
-            return HttpResponseRedirect(u'%s?status_message=Додавання студента скасовано!' % reverse('home'))
+            messages.warning(request, u"Додавання студента скасовано!")
+            return HttpResponseRedirect(reverse('home'))
     else:
         return render(request, 'students/students_add.html',
                       {'groups': Group.objects.all().order_by('title')})
@@ -191,11 +194,13 @@ class StudentUpdateView(UpdateView):
     form_class = StudentUpdateForm
 
     def get_success_url(self):
-        return u"%s?status_message=Студента успішно збережено!" % reverse('home')
+        messages.success(self.request, u"Студента успішно збережено!")
+        return reverse('home')
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('cancel_button'):
-            return HttpResponseRedirect(u'%s?status_message=Редагування студента відмінено!' % reverse('home'))
+            messages.warning(request, u"Редагування студента відмінено!")
+            return HttpResponseRedirect(reverse('home'))
         else:
             return super(StudentUpdateView, self).post(request, *args, **kwargs)
 
@@ -205,4 +210,5 @@ class StudentDeleteView(DeleteView):
     template_name = 'students/students_confirm_delete.html'
 
     def get_success_url(self):
-        return u"%s?status_message=Студента успішно видалено!" % reverse('home')
+        messages.success(self.request, "Студента успішно видалено!")
+        return reverse('home')
