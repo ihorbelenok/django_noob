@@ -97,22 +97,25 @@ def students_add(request):
 
             photo = request.FILES.get('photo')
             if photo:
-                try:
-                    image = Image.open(photo)
-                except Exception:
-                    errors[
-                        'photo'] = u"Завантажений файл не є файлом зображення або пошкоджений"
+                if photo.name.split(".")[-1].lower() not in ('jpg', 'jpeg', 'png', 'gif'):
+                    errors['photo'] = u"Файл має бути одного з наступних типів: jpg, jpeg, png, gif"
                 else:
-                    if photo.size > 2 * 1024 * 1024:
+                    try:
+                        image = Image.open(photo)
+                    except Exception:
                         errors[
-                            'photo'] = u"Фото занадто велике (розмір файлу має бути менше 2Мб)"
+                            'photo'] = u"Завантажений файл не є файлом зображення або пошкоджений"
                     else:
-                        data['photo'] = photo
+                        if photo.size > 2 * 1024 * 1024:
+                            errors[
+                                'photo'] = u"Фото занадто велике (розмір файлу має бути менше 2Мб)"
+                        else:
+                            data['photo'] = photo
 
             if not errors:
                 student = Student(**data)
                 student.save()
-                return HttpResponseRedirect(u'%s?status_message=Студента успішно додано!' % reverse('home'))
+                return HttpResponseRedirect(u'%s?status_message=Студента "%s" успішно додано!' % (reverse('home'), student))
             else:
                 return render(request, 'students/students_add.html',
                               {'groups': Group.objects.all().order_by('title'),
