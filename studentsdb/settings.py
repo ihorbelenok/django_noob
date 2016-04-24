@@ -134,7 +134,6 @@ from .email import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 
 EMAIL_USE_TLS = False
 
-
 EMAIL_USE_SSL = True
 
 # crispy forms settings

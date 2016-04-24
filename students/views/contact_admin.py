@@ -4,13 +4,15 @@ from django.shortcuts import render
 from django import forms
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy, reverse
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 
-
+from django.views.generic import FormView
 from studentsdb.settings import ADMIN_EMAIL
+
+from django.contrib import messages
 
 
 class ContactForm(forms.Form):
@@ -49,22 +51,20 @@ class ContactForm(forms.Form):
         widget=forms.Textarea)
 
 
-def contact_admin(request):
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            subject = form.cleaned_data['subject']
-            message = form.cleaned_data['message']
-            from_email = form.cleaned_data['from_email']
+class ContactView(FormView):
+    template_name = 'contact_admin/form.html'
+    form_class = ContactForm
+    success_url = reverse_lazy('contact_admin')
 
-            try:
-                send_mail(subject, message, from_email, [ADMIN_EMAIL])
-            except Exception:
-                message = u"Під час відправки листа виникоа непередбачувана помилка. Спробуйте скористатись даною формою пізніше."
-            else:
-                message = u"Повідомлення успішно відправлене!"
+    def form_valid(self, form):
+        subject = form.cleaned_data['subject']
+        message = form.cleaned_data['message']
+        from_email = form.cleaned_data['from_email']
 
-            return HttpResponseRedirect(u"%s?status_message=%s" % (reverse("contact_admin"), message))
-    else:
-        form = ContactForm()
-    return render(request, 'contact_admin/form.html', {'form': form})
+        try:
+            send_mail(subject, message, from_email, [ADMIN_EMAIL])
+        except Exception:
+            messages.error(self.request, u"Під час відправки листа виникла непередбачувана помилка. Спробуйте скористатись даною формою пізніше.")
+        else:
+            messages.success(self.request, u"Повідомлення успішно відправлене!")
+        return super(ContactView, self).form_valid(form)

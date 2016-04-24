@@ -19,6 +19,7 @@ from students.views import students, groups, journal, exams, examresults, contac
 from .settings import MEDIA_URL, MEDIA_ROOT, DEBUG
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     # students urls
     url(r'^$', students.students_list, name='home'),
@@ -74,7 +75,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     # contact admin form
-    url(r'^contact-admin/$', contact_admin.contact_admin, name='contact_admin'),
+    url(r'^contact-admin/$', contact_admin.ContactView.as_view(), name='contact_admin'),
 ]
 
 if DEBUG:
