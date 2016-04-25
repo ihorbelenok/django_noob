@@ -13,6 +13,7 @@ from django.contrib import messages
 
 from PIL import Image
 
+from django import forms
 from django.forms import ModelForm
 from django.views.generic import ListView, UpdateView, DeleteView
 
@@ -99,10 +100,11 @@ def students_add(request):
             photo = request.FILES.get('photo')
             if photo:
                 if photo.name.split(".")[-1].lower() not in ('jpg', 'jpeg', 'png', 'gif'):
-                    errors['photo'] = u"Файл має бути одного з наступних типів: jpg, jpeg, png, gif"
+                    errors[
+                        'photo'] = u"Файл має бути одного з наступних типів: jpg, jpeg, png, gif"
                 else:
                     try:
-                        image = Image.open(photo)
+                        Image.open(photo)
                     except Exception:
                         errors[
                             'photo'] = u"Завантажений файл не є файлом зображення або пошкоджений"
@@ -116,7 +118,8 @@ def students_add(request):
             if not errors:
                 student = Student(**data)
                 student.save()
-                messages.success(request, u'Студента "%s" успішно додано!' % student)
+                messages.success(
+                    request, u'Студента "%s" успішно додано!' % student)
                 return HttpResponseRedirect(reverse('home'))
             else:
                 return render(request, 'students/students_add.html',
@@ -203,6 +206,129 @@ class StudentUpdateView(UpdateView):
             return HttpResponseRedirect(reverse('home'))
         else:
             return super(StudentUpdateView, self).post(request, *args, **kwargs)
+
+
+class StudentUpdateFormHW(forms.Form):
+    def __init__(self, *args, **kwargs):
+        # call original initializer
+        pk = kwargs.pop('pk')
+        super(StudentUpdateFormHW, self).__init__(*args, **kwargs)
+
+        # this helper object allows us to customize form
+        self.helper = FormHelper()
+
+        # form tag attributes
+        self.helper.form_class = 'form-horizontal'
+        self.helper.form_method = 'post'
+        self.helper.form_action = reverse(
+            'students_edit_hw', kwargs={'pk': pk})
+
+        # twitter bootstrap styles
+        self.helper.help_text_inline = True
+        self.helper.html5_required = True
+        self.helper.label_class = 'col-sm-2 control-label'
+        self.helper.field_class = 'col-sm-10'
+
+        # form buttons
+        self.helper.add_input(Submit('save_button', u'Надіслати'))
+        self.helper.add_input(Submit('cancel_button', u'Скасувати'))
+
+    first_name = forms.CharField(
+        required=True,
+        label='Імʼя',
+        max_length=256)
+    last_name = forms.CharField(
+        required=True,
+        label='Прізвище',
+        max_length=256)
+    middle_name = forms.CharField(
+        required=False,
+        label='По-батькові',
+        max_length=256)
+    birth_date = forms.DateField(
+        required=True,
+        label='Дата народження')
+    photo = forms.FileField(
+        required=False,
+        label='Фото')
+    card = forms.CharField(
+        required=True,
+        label='Білет',
+        max_length=256)
+    student_group = forms.ModelChoiceField(
+        required=True,
+        label="Група",
+        queryset=Group.objects.all())
+    notes = forms.CharField(
+        required=False,
+        label='Додаткові нотатки',
+        widget=forms.Textarea)
+
+
+def StudentUpdate_HW(request, pk, prev_form=None):
+    student = Student.objects.get(pk=pk)
+    if request.method == 'POST':
+        initial_values = {}
+        initial_values['photo'] = student.photo
+        initial_values['student_group'] = student.student_group
+        form = StudentUpdateFormHW(request.POST, initial=initial_values, pk=pk)
+        if request.POST.get('save_button') is not None:
+            if form.is_valid():
+                student.first_name = request.POST.get('first_name')
+                student.last_name = request.POST.get('last_name')
+                student.middle_name = request.POST.get('middle_name')
+                student.birth_date = request.POST.get('birth_date')
+                student.card = request.POST.get('card')
+                student.notes = request.POST.get('notes')
+                if request.POST.get('photo-clear') is not None:
+                    student.photo = None
+                else:
+                    photo = request.FILES.get('photo')
+                    if photo:
+                        if photo.name.split(".")[-1].lower() not in ('jpg', 'jpeg', 'png', 'gif'):
+                            messages.error(
+                                request,
+                                u"Файл має бути одного з наступних типів: jpg, jpeg, png, gif")
+                            return render(
+                                request,
+                                'students/students_edit_hw.html',
+                                {'form': form, 'pk': pk})
+                        else:
+                            try:
+                                Image.open(photo)
+                            except Exception:
+                                messages.error(
+                                    request,
+                                    u"Завантажений файл не є файлом зображення або пошкоджений")
+                                return render(
+                                    request,
+                                    'students/students_edit_hw.html',
+                                    {'form': form, 'pk': pk})
+                            else:
+                                if photo.size > 2 * 1024 * 1024:
+                                    messages.error(
+                                        request,
+                                        u"Фото занадто велике (розмір файлу має бути менше 2Мб)")
+                                    return render(
+                                        request,
+                                        'students/students_edit_hw.html',
+                                        {'form': form, 'pk': pk})
+                                else:
+                                    student.photo = photo
+                student.save()
+                messages.success(
+                    request, 'Інформацію по студенту "%s" успішно збережено.' % student)
+                return HttpResponseRedirect(reverse('home'))
+
+        elif request.POST.get('cancel_button') is not None:
+            messages.warning(request, 'Редагування студента скасовано.')
+            return HttpResponseRedirect(reverse('home'))
+    else:
+        initial_values = student.__dict__
+        initial_values['photo'] = student.photo
+        initial_values['student_group'] = student.student_group
+        form = StudentUpdateFormHW(initial=initial_values, pk=pk)
+    return render(request, 'students/students_edit_hw.html', {'form': form, 'pk': pk})
 
 
 class StudentDeleteView(DeleteView):
