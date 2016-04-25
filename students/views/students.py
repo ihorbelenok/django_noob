@@ -221,7 +221,7 @@ class StudentUpdateFormHW(forms.Form):
         self.helper.form_class = 'form-horizontal'
         self.helper.form_method = 'post'
         self.helper.form_action = reverse(
-            'students_edit_hw', kwargs={'pk': pk})
+            'students_edit', kwargs={'pk': pk})
 
         # twitter bootstrap styles
         self.helper.help_text_inline = True
