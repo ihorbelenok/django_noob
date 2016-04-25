@@ -232,6 +232,7 @@ class StudentUpdateFormHW(forms.Form):
         # form buttons
         self.helper.add_input(Submit('save_button', u'Надіслати'))
         self.helper.add_input(Submit('cancel_button', u'Скасувати'))
+        self.pk = pk
 
     first_name = forms.CharField(
         required=True,
@@ -263,6 +264,18 @@ class StudentUpdateFormHW(forms.Form):
         required=False,
         label='Додаткові нотатки',
         widget=forms.Textarea)
+
+    def clean_student_group(self):
+        """ Check if student is leader in any group
+            If yes, then ensure it's the same as selected group. """
+
+        # get group where current sudent is a leader
+        groups = Group.objects.filter(leader=Student.objects.get(pk=self.pk))
+        if len(groups) > 0 and self.cleaned_data['student_group'] != groups[0]:
+            raise forms.ValidationError(
+                u"Студент є старостою іншої групи", code='invalid')
+
+        return self.cleaned_data['student_group']
 
 
 def StudentUpdate_HW(request, pk, prev_form=None):
