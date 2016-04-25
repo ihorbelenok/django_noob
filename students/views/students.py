@@ -18,7 +18,7 @@ from django.forms import ModelForm
 from django.views.generic import ListView, UpdateView, DeleteView
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
+from crispy_forms.layout import Submit, Button
 from crispy_forms.bootstrap import FormActions
 
 
@@ -231,7 +231,7 @@ class StudentUpdateFormHW(forms.Form):
 
         # form buttons
         self.helper.add_input(Submit('save_button', u'Надіслати'))
-        self.helper.add_input(Submit('cancel_button', u'Скасувати'))
+        self.helper.add_input(Button('cancel', 'Cancel', onclick='window.location.href="{}"'.format(reverse('home'))))
         self.pk = pk
 
     first_name = forms.CharField(
