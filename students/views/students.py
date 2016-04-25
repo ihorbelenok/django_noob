@@ -231,7 +231,7 @@ class StudentUpdateFormHW(forms.Form):
 
         # form buttons
         self.helper.add_input(Submit('save_button', u'Надіслати'))
-        self.helper.add_input(Button('cancel', 'Cancel', onclick='window.location.href="{}"'.format(reverse('home'))))
+        self.helper.add_input(Button('cancel_button', u'Скасувати', onclick='window.location.href="{}"'.format(reverse('home'))))
         self.pk = pk
 
     first_name = forms.CharField(
