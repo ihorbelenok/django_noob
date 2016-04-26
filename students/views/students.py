@@ -15,7 +15,7 @@ from PIL import Image
 
 from django import forms
 from django.forms import ModelForm
-from django.views.generic import ListView, UpdateView, DeleteView
+from django.views.generic import ListView, UpdateView, DeleteView, CreateView
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Button
@@ -133,6 +133,56 @@ def students_add(request):
                       {'groups': Group.objects.all().order_by('title')})
 
 
+class StudentAddForm(ModelForm):
+    class Meta:
+        model = Student
+        fields = ['first_name',
+                  'last_name',
+                  'middle_name',
+                  'birth_date',
+                  'photo',
+                  'card',
+                  'student_group',
+                  'notes']
+
+    def __init__(self, *args, **kwargs):
+        super(StudentAddForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+
+        # set form tag attributes
+        self.helper.form_action = reverse('students_add')
+        self.helper.form_method = 'POST'
+        self.helper.form_class = 'form-horizontal'
+
+        # set form field properties
+        self.helper.help_text_inline = True
+        self.helper.html5_required = True
+        self.helper.label_class = 'col-sm-2 control-label'
+        self.helper.field_class = 'col-sm-10'
+
+        # add buttons
+        self.helper.add_input(Submit('save_button', u'Надіслати'))
+        self.helper.add_input(
+            Button('cancel_button', u'Скасувати', onclick='window.location.href="{}"'.format(reverse('home'))))
+
+
+class StudentAddView(CreateView):
+    model = Student
+    template_name = 'students/students_edit_hw.html'
+    form_class = StudentAddForm
+
+    def get_success_url(self):
+        messages.success(self.request, u"Студента успішно додано!")
+        return reverse('home')
+
+    # def post(self, request, *args, **kwargs):
+    #     if request.POST.get('cancel_button'):
+    #         messages.warning(request, u"Додавання студента відмінено!")
+    #         return HttpResponseRedirect(reverse('home'))
+    #     else:
+    #         return super(StudentAddView, self).post(request, *args, **kwargs)
+
+
 def students_delete(request, sid):
     return HttpResponse('<h1>Delete student %s</h1>' % sid)
 
@@ -166,7 +216,14 @@ class StudentUpdateForm(ModelForm):
 
     class Meta:
         model = Student
-        fields = '__all__'
+        fields = ['first_name',
+                  'last_name',
+                  'middle_name',
+                  'birth_date',
+                  'photo',
+                  'card',
+                  'student_group',
+                  'notes']
 
     def __init__(self, *args, **kwargs):
         super(StudentUpdateForm, self).__init__(*args, **kwargs)
@@ -185,10 +242,9 @@ class StudentUpdateForm(ModelForm):
         self.helper.field_class = 'col-sm-10'
 
         # add buttons
-        self.helper.layout[-1] = FormActions(
-            Submit('add_button', u'Зберегти', css_class="btn btn-primary"),
-            Submit('cancel_button', u'Скасувати', css_class="btn btn-link"),
-        )
+        self.helper.add_input(Submit('save_button', u'Надіслати'))
+        self.helper.add_input(
+            Button('cancel_button', u'Скасувати', onclick='window.location.href="{}"'.format(reverse('home'))))
 
 
 class StudentUpdateView(UpdateView):
@@ -231,7 +287,8 @@ class StudentUpdateFormHW(forms.Form):
 
         # form buttons
         self.helper.add_input(Submit('save_button', u'Надіслати'))
-        self.helper.add_input(Button('cancel_button', u'Скасувати', onclick='window.location.href="{}"'.format(reverse('home'))))
+        self.helper.add_input(
+            Button('cancel_button', u'Скасувати', onclick='window.location.href="{}"'.format(reverse('home'))))
         self.pk = pk
 
     first_name = forms.CharField(

@@ -7,15 +7,6 @@
 
 {% block title %} Редагувати студента {% endblock title %}
 
-{% block status_message %}
-    {% if form.errors %}
-        <div class="alert alert-warning" role="alert"> Будь-ласка, виправте наступні помилки</div>
-    {% endif %}
-
-    {{ block.super }}
-    
-{% endblock status_message %}
-
 {% block content %}
 
 {% crispy form %}
