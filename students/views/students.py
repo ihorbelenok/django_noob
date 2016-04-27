@@ -27,25 +27,31 @@ def students_list(request,
                   template='students/students_list.html',
                   page_template='students/students_page.html',
                   extra_context=None):
-    students = Student.objects.all().order_by('last_name')
+    if request.method == "POST":
+        selected = request.POST.getlist('student_select')
+        studlist = '/'.join(selected)
+        studlist = studlist + "/"
+        return HttpResponseRedirect(reverse("students_delete", kwargs={'studlist': studlist}))
+    else:
+        students = Student.objects.all().order_by('last_name')
 
-    order_by = request.GET.get('order_by', '')
-    if order_by in ('last_name', 'first_name', 'card', 'id'):
-        students = students.order_by(order_by)
-        if request.GET.get('reverse', '') == '1':
-            students = students.reverse()
+        order_by = request.GET.get('order_by', '')
+        if order_by in ('last_name', 'first_name', 'card', 'id'):
+            students = students.order_by(order_by)
+            if request.GET.get('reverse', '') == '1':
+                students = students.reverse()
 
-    context = {'students': students,
-               'page_template': page_template,
-               'start_id': (utils.get_page_number_from_request(request) - 1) * 3,
-               'per_page': 10}
+        context = {'students': students,
+                   'page_template': page_template,
+                   'start_id': (utils.get_page_number_from_request(request) - 1) * 10,
+                   'per_page': 10}
 
-    if extra_context is not None:
-        context.update(extra_context)
-    if request.is_ajax():
-        template = page_template
+        if extra_context is not None:
+            context.update(extra_context)
+        if request.is_ajax():
+            template = page_template
 
-    return render(request, template, context)
+        return render(request, template, context)
 
 
 def students_add(request):
@@ -181,10 +187,6 @@ class StudentAddView(CreateView):
     #         return HttpResponseRedirect(reverse('home'))
     #     else:
     #         return super(StudentAddView, self).post(request, *args, **kwargs)
-
-
-def students_delete(request, sid):
-    return HttpResponse('<h1>Delete student %s</h1>' % sid)
 
 
 class StudentList(ListView):
@@ -503,25 +505,28 @@ class StudentDeleteView(DeleteView):
         messages.success(self.request, "Студента успішно видалено!")
         return reverse('home')
 
-
-def student_delete(request, pk):
-    students = Student.objects.filter(pk=pk)
-    if len(students)!=1:
-        messages.error(request, 'Обраного студента не існує.')
+def students_delete(request, studlist):
+    selected = studlist[0:-1].split('/')
+    selected = map(int, selected)
+    students = Student.objects.filter(pk__in=selected)
+    if (len(students) != len(selected)) or len(selected) == 0:
+        messages.error(request, 'Одного або декількох з обраних студентів не існує.')
         return HttpResponseRedirect(reverse('home'))
     else:
-        student = Student.objects.get(pk=pk)
         if request.method == "POST":
             if request.POST.get('confirm_button') is not None:
-                name = student.__str__()
-                student.delete()
-                messages.success(request, "Студента '%s' успішно видалено." % name)
+                name = ""
+                for pk in selected:
+                    student = Student.objects.get(pk=pk)
+                    name = name + "'"+student.__str__() + "', "
+                    student.delete()
+                messages.success(request, "Успішно видалено: %s." % name[0:-2])
                 return HttpResponseRedirect(reverse('home'))
             elif request.POST.get('cancel_button') is not None:
-                messages.warning(request, "Видалення студента скасовано.")
+                messages.warning(request, "Видалення студентів скасовано.")
                 return HttpResponseRedirect(reverse('home'))
             else:
                 messages.error(request, "Упс! Щось пішло не так. Повторіть спробу пізніше.")
                 return HttpResponseRedirect(reverse('home'))
         else:
-            return render(request, 'students/students_delete.html', {'student': student})
+            return render(request, 'students/students_delete.html', {'studlist': studlist, 'students': students})

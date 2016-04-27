@@ -5,12 +5,19 @@
 
 {% block meta_title %} Видалити студента {% endblock meta_title %}
 
-{% block title %} Видалити студента "{{student}}"? {% endblock title %}
+{% block title %} 
+Ви впевнені, що бажаєте видалити наступних студентів: 
+{% endblock title %}
 
 {% block content %}
 
+<ul>
+{% for student in students %}
+        <li>{{ student }}</li>
+{% endfor %}
+</ul>
 
-<form enctype="multipart/form-data" class="form-horizontal" action="{% url "students_delete" student.pk %}" method="post">
+<form enctype="multipart/form-data" class="form-horizontal" action="{% url "students_delete" studlist %}" method="post">
     {% csrf_token %}
     <div class="form-group">
         <input class="btn btn-danger" type="submit" value="Так" name="confirm_button"/>

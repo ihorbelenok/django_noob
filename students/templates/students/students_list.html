@@ -13,9 +13,12 @@
 
 	<!-- Start students listing -->
 	{% with order_by=request.GET.order_by reverse=request.GET.reverse %}
-	<table class="table table-hover table-striped">
+	<form enctype="multipart/form-data" class="form-horizontal" action="{% url "home" %}" method="post">
+    {% csrf_token %}
+    <table class="table table-hover table-striped">
 		<thead>
 			<tr>
+                <th></th>
 				<th><a href="{% url "home" %}?order_by=id{% if order_by == 'id' and reverse != '1'%}&amp;reverse=1{% endif %}"># {% if order_by == 'id' and reverse != '1' %}&uarr;{% elif order_by == 'id' and reverse == '1' %}&darr;{% endif %}</a></th>
 				<th>Фото</th>
 				<th><a href="{% url "home" %}?order_by=last_name{% if order_by == 'last_name' and reverse != '1' or not order_by %}&amp;reverse=1{% endif %}">Прiзвище {% if order_by == 'last_name' and reverse != '1' or not order_by %}&uarr;{% elif order_by == 'last_name' and reverse == '1' %}&darr;{% endif %}</a></th>
@@ -29,6 +32,8 @@
 		</tbody>
 	</table>
 	{% endwith %}
+    <input class="btn btn-danger" type="submit" value="Видалити" name="delete_button"/>
+    </form>
 {% endblock content %}
 
 {% block extra_js %}
