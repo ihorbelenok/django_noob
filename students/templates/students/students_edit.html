@@ -7,14 +7,81 @@
 
 {% block title %} Редагувати студента {% endblock title %}
 
-{% block status_message %}
-    {% if form.errors %}
-        <div class="alert alert-warning" role="alert"> Будь-ласка, виправте наступні помилки</div>
-    {% endif %}
-{% endblock status_message %}
-
 {% block content %}
 
-{% crispy form %}
-	
+<form enctype="multipart/form-data" class="form-horizontal" action="{% url "students_edit" pk %}" method="post">
+    {% csrf_token %}
+    <div class="form-group{% if errors.first_name %} has-error{% endif %}">
+        <label for="" class="control-label col-sm-2">Імʼя*</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="first_name" id="first_name" value="{{student.first_name}}">
+            <span class="help-block"> {{ errors.first_name }}</span>
+        </div>
+    </div>
+    <div class="form-group{% if errors.last_name %} has-error{% endif %}">
+        <label for="" class="control-label col-sm-2">Прізвище*</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="last_name" id="last_name" value="{{student.last_name}}">
+            <span class="help-block"> {{ errors.last_name }}</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="" class="control-label col-sm-2">По-батькові</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="middle_name" id="middle_name" value="{{student.middle_name}}">
+            <span class="help-block"></span>
+        </div>
+    </div>
+    <div class="form-group{% if errors.birth_date %} has-error{% endif %}">
+        <label for="" class="control-label col-sm-2">Дата народження*</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="birth_date" id="birth_date" value="{{student.birth_date|date:"Y-m-d"}}" placeholder="1987-01-23">
+            <span class="help-block"> {{ errors.birth_date }}</span>
+        </div>
+    </div>
+    <div class="form-group{% if errors.photo %} has-error{% endif %}">
+        <label for="" class="control-label col-sm-2">Фото</label>
+        <div class="col-sm-10">
+            {% if student.photo %}
+                Наразі: <a href="{{student.photo.url}}">{{student.photo}}</a>
+                <input type="checkbox" name="photo-clear"> Видалити    
+            {% endif %}
+            <input class="form-control" type="file" name="photo" id="photo" value="">
+            <span class="help-block"> {{ errors.photo }}</span>
+        </div>
+    </div>
+    <div class="form-group{% if errors.card %} has-error{% endif %}">
+        <label for="" class="control-label col-sm-2">Білет*</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="card" id="card" value="{{student.card}}">
+            <span class="help-block"> {{ errors.card }}</span>
+        </div>
+    </div>
+    <div class="form-group{% if errors.student_group %} has-error{% endif %}">
+        <label for="" class="control-label col-sm-2">Група*</label>
+        <div class="col-sm-10">
+            <select class="form-control" name="student_group" id="student_group">
+                <option value=""> Оберіть групу</option>
+                {% for group in groups %}
+                    <option value="{{ group.id }}" {% if group.id == student.student_group.id %}selected="1"{% endif %}> {{ group.title }}</option>
+                {% endfor %}
+            </select>
+            <span class="help-block"> {{ errors.student_group }}</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="" class="control-label col-sm-2">Додаткова інформація</label>
+        <div class="col-sm-10">
+            <textarea name="notes" id="notes" class="form-control">{{student.notes}}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="" class="control-label col-sm-2"></label>
+        <div class="col-sm-10">
+            <input class="btn btn-primary" type="submit" value="Зберегти" name="save_button"/>
+            <button class="btn btn-link" type="submit" name="cancel_button">Скасувати</button>
+        </div>
+    </div>
+</form>
+
 {% endblock content %}

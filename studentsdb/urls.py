@@ -24,12 +24,13 @@ urlpatterns = [
     # students urls
     url(r'^$', students.students_list, name='home'),
     url(r'^students/add/$',
-        # students.students_add,
-        students.StudentAddView.as_view(),
+        # students.students_add,            # fully handmade
+        students.StudentAddView.as_view(),  # modelform+createview
         name='students_add'),
     url(r'^students/(?P<pk>\d+)/edit/$',
-        students.StudentUpdateView.as_view(),
-        # students.StudentUpdate_HW,
+        # students.StudentUpdateView.as_view(), # modelform+updateview
+        # students.StudentUpdate_HW,            # modelform + handmade view
+        students.student_edit_manual,           # fully handmade
         name='students_edit'),
     url(r'^students/(?P<pk>\d+)/delete/$',
         students.StudentDeleteView.as_view(),

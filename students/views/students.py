@@ -168,7 +168,7 @@ class StudentAddForm(ModelForm):
 
 class StudentAddView(CreateView):
     model = Student
-    template_name = 'students/students_edit_hw.html'
+    template_name = 'students/students_add_edit.html'
     form_class = StudentAddForm
 
     def get_success_url(self):
@@ -249,7 +249,7 @@ class StudentUpdateForm(ModelForm):
 
 class StudentUpdateView(UpdateView):
     model = Student
-    template_name = 'students/students_edit.html'
+    template_name = 'students/students_add_edit.html'
     form_class = StudentUpdateForm
 
     def get_success_url(self):
@@ -399,6 +399,103 @@ def StudentUpdate_HW(request, pk, prev_form=None):
         initial_values['student_group'] = student.student_group
         form = StudentUpdateFormHW(initial=initial_values, pk=pk)
     return render(request, 'students/students_edit_hw.html', {'form': form, 'pk': pk})
+
+
+def student_edit_manual(request, pk):
+    students = Student.objects.filter(pk=pk)
+    groups = Group.objects.all()
+
+    if len(students) != 1:
+        messages.error(request, 'Такого студента не існує')
+        return HttpResponseRedirect(reverse('home'))
+    elif request.method == "POST":
+        st = Student.objects.get(pk=pk)
+        if request.POST.get('save_button') is not None:
+            st.middle_name = request.POST.get('middle_name', '').strip()
+            st.notes = request.POST.get('notes', '').strip()
+            errors = {}
+
+            first_name = request.POST.get('first_name', '').strip()
+            if not first_name:
+                errors['first_name'] = u"Імʼя є обовʼязковим."
+            else:
+                st.first_name = first_name
+
+            last_name = request.POST.get('last_name', '').strip()
+            if not last_name:
+                errors['last_name'] = u"Прізвище є обовʼязковим."
+            else:
+                st.last_name = last_name
+
+            birth_date = request.POST.get('birth_date', '').strip()
+            if not birth_date:
+                errors['birth_date'] = u"Дата народження є обовʼязковою."
+            else:
+                try:
+                    bd = datetime.strptime(birth_date, '%Y-%m-%d')
+                except Exception:
+                    errors['birth_date'] = u"Введіть коректний формат дати (напр. 1987-12-30)"
+                else:
+                    st.birth_date = bd
+
+            if request.POST.get('photo-clear') is not None:
+                st.photo = None
+            else:
+                photo = request.FILES.get('photo')
+                if photo:
+                    if photo.name.split(".")[-1].lower() not in ('jpg', 'jpeg', 'png', 'gif'):
+                        errors['photo']=u"Файл має бути одного з наступних типів: jpg, jpeg, png, gif"                
+                    else:
+                        try:
+                            Image.open(photo)
+                        except Exception:
+                            errors['photo']=u"Завантажений файл не є файлом зображення або пошкоджений"                    
+                        else:
+                            if photo.size > 2 * 1024 * 1024:
+                                errors['photo']=u"Фото занадто велике (розмір файлу має бути менше 2Мб)"                        
+                            else:
+                                st.photo = request.FILES.get('photo')
+
+            card = request.POST.get('card', '').strip()
+            if not card:
+                errors['card'] = u"Номер білета є обовʼязковим."
+            else:
+                st.card = card
+
+            student_group = request.POST.get('student_group', '').strip()
+            if not student_group:
+                errors['student_group'] = u"Група є обовʼязковою"
+            else:
+                gr = Group.objects.filter(pk=student_group)
+                if len(gr) != 1:
+                    errors['student_group'] = u"Оберіть коректну групу"
+                else:
+                    grps = Group.objects.filter(leader=Student.objects.get(pk=pk))
+                    if len(grps) > 0 and int(student_group) != grps[0].pk:
+                        errors['student_group'] = u"Студент є старостою іншої групи"
+                    else:
+                        st.student_group = gr[0]
+
+            if errors:
+                messages.error(request, "Виправте, будь-ласка, наступні помилки:")
+                return render(request, 'students/students_edit.html', {'pk': pk, 'student': st, 'errors': errors, 'groups': groups})
+            else:
+                st.save()
+                messages.success(request, 'Інформацію по студенту "%s" успішно збережено.' % students[0])
+                return HttpResponseRedirect(reverse('home'))
+        elif request.POST.get('cancel_button') is not None:
+            messages.warning(request, 'Редагування студента скасовано.')
+            return HttpResponseRedirect(reverse('home'))
+        else:
+            messages.error(request, 'Упс! Щось пішло не так')
+            return HttpResponseRedirect(reverse('home'))
+    else:
+        return render(request,
+                      'students/students_edit.html',
+                      {'pk': pk, 'student': students[0], 'groups': groups})
+
+    
+        
 
 
 class StudentDeleteView(DeleteView):
