@@ -406,7 +406,7 @@ def student_edit_manual(request, pk):
     groups = Group.objects.all()
 
     if len(students) != 1:
-        messages.error(request, 'Такого студента не існує')
+        messages.error(request, 'Обраного студента не існує')
         return HttpResponseRedirect(reverse('home'))
     elif request.method == "POST":
         st = Student.objects.get(pk=pk)
@@ -487,15 +487,12 @@ def student_edit_manual(request, pk):
             messages.warning(request, 'Редагування студента скасовано.')
             return HttpResponseRedirect(reverse('home'))
         else:
-            messages.error(request, 'Упс! Щось пішло не так')
+            messages.error(request, 'Упс! Щось пішло не так. Повторіть спробу пізніше.')
             return HttpResponseRedirect(reverse('home'))
     else:
         return render(request,
                       'students/students_edit.html',
                       {'pk': pk, 'student': students[0], 'groups': groups})
-
-    
-        
 
 
 class StudentDeleteView(DeleteView):
@@ -505,3 +502,26 @@ class StudentDeleteView(DeleteView):
     def get_success_url(self):
         messages.success(self.request, "Студента успішно видалено!")
         return reverse('home')
+
+
+def student_delete(request, pk):
+    students = Student.objects.filter(pk=pk)
+    if len(students)!=1:
+        messages.error(request, 'Обраного студента не існує.')
+        return HttpResponseRedirect(reverse('home'))
+    else:
+        student = Student.objects.get(pk=pk)
+        if request.method == "POST":
+            if request.POST.get('confirm_button') is not None:
+                name = student.__str__()
+                student.delete()
+                messages.success(request, "Студента '%s' успішно видалено." % name)
+                return HttpResponseRedirect(reverse('home'))
+            elif request.POST.get('cancel_button') is not None:
+                messages.warning(request, "Видалення студента скасовано.")
+                return HttpResponseRedirect(reverse('home'))
+            else:
+                messages.error(request, "Упс! Щось пішло не так. Повторіть спробу пізніше.")
+                return HttpResponseRedirect(reverse('home'))
+        else:
+            return render(request, 'students/students_delete.html', {'student': student})

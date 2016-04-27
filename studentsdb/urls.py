@@ -33,7 +33,8 @@ urlpatterns = [
         students.student_edit_manual,           # fully handmade
         name='students_edit'),
     url(r'^students/(?P<pk>\d+)/delete/$',
-        students.StudentDeleteView.as_view(),
+        # students.StudentDeleteView.as_view(), # deleteview
+        students.student_delete,                # fully handmade
         name='students_delete'),
     url(r'^student_list/$', students.StudentList.as_view()),
 
