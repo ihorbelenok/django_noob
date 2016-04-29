@@ -59,7 +59,7 @@ class StudentAdmin(admin.ModelAdmin):
             message = "Запис про студента"
         else:
             message = "Записи про студентів"
-        self.message_user(request, "%s було успішно клоновані." % message)
+        self.message_user(request, "%s було успішно клоновано." % message)
 
     copy.short_description = "Клонувати виділені записи"
 

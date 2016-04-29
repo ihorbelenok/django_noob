@@ -43,8 +43,8 @@ def students_list(request,
 
         context = {'students': students,
                    'page_template': page_template,
-                   'start_id': (utils.get_page_number_from_request(request) - 1) * 10,
-                   'per_page': 10}
+                   'start_id': (utils.get_page_number_from_request(request) - 1) * 15,
+                   'per_page': 15}
 
         if extra_context is not None:
             context.update(extra_context)
