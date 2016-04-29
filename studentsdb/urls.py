@@ -28,9 +28,8 @@ urlpatterns = [
         students.StudentAddView.as_view(),  # modelform+createview
         name='students_add'),
     url(r'^students/(?P<pk>\d+)/edit/$',
-        # students.StudentUpdateView.as_view(), # modelform+updateview
-        # students.StudentUpdate_HW,            # modelform + handmade view
-        students.student_edit_manual,           # fully handmade
+        students.StudentUpdateView.as_view(), # modelform+updateview
+        # students.student_edit_manual,           # fully handmade
         name='students_edit'),
     url(r'^students/(?P<studlist>(?:\d+/)+)delete/$',
         # students.StudentDeleteView.as_view(), # deleteview
