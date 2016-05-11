@@ -1,0 +1,14 @@
+{% extends "students/base.html" %}
+
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block meta_title %} Редагувати групу {% endblock meta_title %}
+
+{% block title %} Редагувати групу {% endblock title %}
+
+{% block content %}
+
+{% crispy form %}
+	
+{% endblock content %}

@@ -44,25 +44,25 @@ urlpatterns = [
     # groups urls
     url(r'^groups$', groups.groups_list, name='groups'),
     url(r'^groups/add/$',
-        groups.groups_add,
+        groups.GroupAddView.as_view(),      # addview
         name='groups_add'),
-    url(r'^groups/(?P<gid>\d+)/edit/$',
-        groups.groups_edit,
+    url(r'^groups/(?P<pk>\d+)/edit/$',
+        groups.GroupUpdateView.as_view(),   # updateview
         name='groups_edit'),
-    url(r'^groups/(?P<gid>\d+)/delete/$',
-        groups.groups_delete,
+    url(r'^groups/(?P<pk>\d+)/delete/$',
+        groups.GroupDeleteView.as_view(),   # deleteview
         name='groups_delete'),
 
     # exams urls
     url(r'^exams$', exams.exams_list, name='exams'),
     url(r'^exams/add/$',
-        exams.exams_add,
+        exams.ExamAddView.as_view(),        #addview
         name='exams_add'),
-    url(r'^exams/(?P<eid>\d+)/edit/$',
-        exams.exams_edit,
+    url(r'^exams/(?P<pk>\d+)/edit/$',
+        exams.ExamUpdateView.as_view(),     #updateview
         name='exams_edit'),
-    url(r'^exams/(?P<eid>\d+)/delete/$',
-        exams.exams_delete,
+    url(r'^exams/(?P<pk>\d+)/delete/$',
+        exams.ExamDeleteView.as_view(),     #deleteview
         name='exams_delete'),
 
     # exam results urls
