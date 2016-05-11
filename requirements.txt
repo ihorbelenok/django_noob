@@ -1,5 +1,5 @@
 Django
 Pillow
-MySql-python
+mysqlclient
 django-endless-pagination
 django-crispy-forms
