@@ -44,13 +44,16 @@ urlpatterns = [
     # groups urls
     url(r'^groups$', groups.groups_list, name='groups'),
     url(r'^groups/add/$',
-        groups.GroupAddView.as_view(),      # addview
+        # groups.GroupAddView.as_view(),      # addview
+        groups.group_add,                    # handmade
         name='groups_add'),
     url(r'^groups/(?P<pk>\d+)/edit/$',
-        groups.GroupUpdateView.as_view(),   # updateview
+        # groups.GroupUpdateView.as_view(),   # updateview
+        groups.group_edit,                  # handmade
         name='groups_edit'),
     url(r'^groups/(?P<pk>\d+)/delete/$',
-        groups.GroupDeleteView.as_view(),   # deleteview
+        # groups.GroupDeleteView.as_view(),   # deleteview
+        groups.groups_delete,               # handmade
         name='groups_delete'),
 
     # exams urls

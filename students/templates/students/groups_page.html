@@ -8,7 +8,7 @@
 <tr>
     <td>{{ start_id|add:forloop.counter }}</td>
     <td><a title="Редагувати" href="{% url "groups_edit" group.id %}">{{ group.title }}</a></td>
-    <td><a title="Редагувати" href="{% url "groups_edit" group.id %}">{{ group.leader }}</a></td>
+    <td><a title="Редагувати" href="{% url "groups_edit" group.id %}">{% if group.leader %}{{ group.leader }}{% else %} ----- {% endif %}</a></td>
     <td>
         <div class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"> Дiя
