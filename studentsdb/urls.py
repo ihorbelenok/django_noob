@@ -59,13 +59,16 @@ urlpatterns = [
     # exams urls
     url(r'^exams$', exams.exams_list, name='exams'),
     url(r'^exams/add/$',
-        exams.ExamAddView.as_view(),        #addview
+        # exams.ExamAddView.as_view(),        #addview
+        exams.exam_add,                     # handmade
         name='exams_add'),
     url(r'^exams/(?P<pk>\d+)/edit/$',
-        exams.ExamUpdateView.as_view(),     #updateview
+        # exams.ExamUpdateView.as_view(),     # updateview
+        exams.exam_edit,                    # handmade
         name='exams_edit'),
     url(r'^exams/(?P<pk>\d+)/delete/$',
-        exams.ExamDeleteView.as_view(),     #deleteview
+        # exams.ExamDeleteView.as_view(),     # deleteview
+        exams.exams_delete,                 # handmade
         name='exams_delete'),
 
     # exam results urls

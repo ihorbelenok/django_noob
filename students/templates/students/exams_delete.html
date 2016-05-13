@@ -1,0 +1,22 @@
+{% extends "students/base.html" %}
+
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block meta_title %} Видалити іспит {% endblock meta_title %}
+
+{% block title %} 
+Ви впевнені, що бажаєте видалити іспит {{ group }}?
+{% endblock title %}
+
+{% block content %}
+
+<form enctype="multipart/form-data" class="form-horizontal" action="{% url "exams_delete" exam.id %}" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <input class="btn btn-danger" type="submit" value="Так" name="confirm_button"/>
+        <button class="btn btn-default" type="submit" name="cancel_button">Ні</button>
+    </div>
+</form>
+	
+{% endblock content %}

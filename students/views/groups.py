@@ -209,8 +209,11 @@ def group_edit(request,pk):
             return render(request, 'students/groups_edit.html', {'students': students, 'group': groups[0], 'pk': pk})
 
 def groups_delete(request, pk):
-    group = Group.objects.get(pk=pk)
-    if request.method == "POST":
+    groups = Group.objects.filter(pk=pk)
+    if len(groups) != 1:
+        messages.error(request, u"Групу не знайдено.")
+        return HttpResponseRedirect(reverse("groups"))
+    elif request.method == "POST":
         if request.POST.get('confirm_button') is not None:
             group.delete()
             messages.success(request, u"Інформацію про групу видалено.")
@@ -219,4 +222,4 @@ def groups_delete(request, pk):
             messages.warning(request, u"Видалення групи скасовано.")
             return HttpResponseRedirect(reverse("groups"))
     else:
-        return render(request, 'students/groups_delete.html', {'group': group, 'pk': pk})
+        return render(request, 'students/groups_delete.html', {'group': groups[0], 'pk': pk})

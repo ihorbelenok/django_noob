@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render
-from django.http import HttpResponse
-#from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import HttpResponseRedirect
 from ..models.exams import Exam
+from ..models.groups import Group
 
 from django.core.urlresolvers import reverse
 
@@ -17,6 +17,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Button
 
 from django.contrib import messages
+from datetime import datetime
 
 
 def exams_list(request, template='students/exams.html',):
@@ -112,3 +113,125 @@ class ExamDeleteView(DeleteView):
         messages.success(self.request, "Іспит успішно видалено!")
         return reverse('exams')
 
+
+def exam_add(request):
+    groups = Group.objects.all()
+    data = {}
+    errors = {}
+    if request.method == "POST":
+        if request.POST.get('add_button') is not None:
+            subject = request.POST.get('subject', '').strip()
+            if not subject:
+                errors['subject'] = u"Назва предмету є обов'язковою."
+            else:
+                data['subject'] = subject
+
+            examdate = request.POST.get('examdate', '').strip()
+            if not examdate:
+                errors['examdate'] = u"Дата іспиту є обов'язковою."
+            else:
+                try:
+                    datetime.strptime(examdate, '%Y-%m-%d %H:%M')
+                except Exception:
+                    errors['examdate'] = u"Некоректний формат дати"
+                else:
+                    data['examdate'] = examdate
+
+            teacher = request.POST.get('teacher', '').strip()
+            if not teacher:
+                errors['teacher'] = u"Інформація про викладача є обов'язковою."
+            else:
+                data['teacher'] = teacher
+
+            exam_group = request.POST.get('exam_group', '').strip()
+            if not exam_group:
+                errors['exam_group'] = u"Група є обов'язковою."
+            else:
+                data['exam_group'] = Group.objects.get(pk=exam_group)
+
+            if errors:
+                messages.error(request, u"Виправте наступні помилки:")
+                return render(request, 'students/exams_add.html', {'groups': groups, 'errors': errors})
+            else:
+                exam = Exam(**data)
+                exam.save()
+                messages.success(request, u"Іспит успішно додано.")
+                return HttpResponseRedirect(reverse("exams"))
+        else:
+            messages.warning(request, u"Додавання групи скасовано")
+            return HttpResponseRedirect(reverse("exams"))
+    else:
+        return render(request, 'students/exams_add.html', {'groups': groups})
+
+def exam_edit(request, pk):
+    groups = Group.objects.all()
+    data = {}
+    errors = {}
+    exams = Exam.objects.filter(pk=pk)
+    if len(exams) != 1:
+        messages.error(request, u"Такого студента не знайдено")
+        return HttpResponseRedirect(reverse("exams"))
+    elif request.method == "POST":
+        if request.POST.get('save_button') is not None:
+            subject = request.POST.get('subject', '').strip()
+            if not subject:
+                errors['subject'] = u"Назва предмету є обов'язковою."
+            else:
+                data['subject'] = subject
+
+            examdate = request.POST.get('examdate', '').strip()
+            if not examdate:
+                errors['examdate'] = u"Дата іспиту є обов'язковою."
+            else:
+                try:
+                    datetime.strptime(examdate, '%Y-%m-%d %H:%M')
+                except Exception:
+                    errors['examdate'] = u"Некоректний формат дати"
+                else:
+                    data['examdate'] = examdate+":00"
+
+            teacher = request.POST.get('teacher', '').strip()
+            if not teacher:
+                errors['teacher'] = u"Інформація про викладача є обов'язковою."
+            else:
+                data['teacher'] = teacher
+
+            exam_group = request.POST.get('exam_group', '').strip()
+            if not exam_group:
+                errors['exam_group'] = u"Група є обов'язковою."
+            else:
+                data['exam_group'] = Group.objects.get(pk=exam_group)
+
+            if errors:
+                messages.error(request, u"Виправте наступні помилки:")
+                return render(request, 'students/exams_edit.html', {'groups': groups, 'errors': errors, 'exam': exams[0]})
+            else:
+                exam = exams[0]
+                exam.subject = data['subject']
+                exam.examdate = data['examdate']
+                exam.teacher = data['teacher']
+                exam.exam_group = data['exam_group']
+                exam.save()
+                messages.success(request, u"Іспит успішно збережено.")
+                return HttpResponseRedirect(reverse("exams"))
+        else:
+            messages.warning(request, u"Редагування групи скасовано")
+            return HttpResponseRedirect(reverse("exams"))
+    else:
+        return render(request, 'students/exams_edit.html', {'groups': groups, 'exam': exams[0]})
+
+def exams_delete(request, pk):
+    exams = Exam.objects.filter(pk=pk)
+    if len(exams) != 1:
+        messages.error(request, u"Іспит не знайдено.")
+        return HttpResponseRedirect(reverse("exams"))
+    elif request.method == "POST":
+        if request.POST.get('confirm_button') is not None:
+            exams.delete()
+            messages.success(request, u"Інформацію про іспит видалено.")
+            return HttpResponseRedirect(reverse("exams"))
+        else:
+            messages.warning(request, u"Видалення іспиту скасовано.")
+            return HttpResponseRedirect(reverse("exams"))
+    else:
+        return render(request, 'students/exams_delete.html', {'exam': exams[0]})
