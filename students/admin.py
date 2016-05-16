@@ -3,11 +3,11 @@ from django.contrib import admin
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm, ValidationError
 
-from models.students import Student
-from models.groups import Group
-from models.journal import JournalEntry
-from models.exams import Exam
-from models.examresults import Examresult
+from models import Student
+from models import Group
+from models import MonthJournal
+from models import Exam
+from models import Examresult
 
 
 class StudentFormAdmin(ModelForm):
@@ -80,6 +80,6 @@ class GroupAdmin(admin.ModelAdmin):
 # Register your models here.
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Group, GroupAdmin)
-admin.site.register(JournalEntry)
 admin.site.register(Exam)
 admin.site.register(Examresult)
+admin.site.register(MonthJournal)
