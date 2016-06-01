@@ -7,47 +7,5 @@
 {% block title %} Облік відвідування {% endblock title %}
 
 {% block content %}
-	<center>
-		<a href="{% url "journal" %}?page={{ current_page }}&amp;month={% if month = 1 %}12&amp;year={{ year|add:"-1" }}{% else %}{{ month|add:"-1" }}&amp;year={{ year }}{% endif %}">&larr;</a>
-		{{ monthyear }}
-		<a href="{% url "journal" %}?page={{ current_page }}&amp;month={% if month = 12 %}1&amp;year={{ year|add:"1" }}{% else %}{{ month|add:"1" }}&amp;year={{ year }}{% endif %}">&rarr;</a>
-	</center>
-
-	<!-- Start students listing -->
-	<table class="table table-hover table-striped">
-		<thead>
-			<tr>
-				<th>#</th>
-				<th>Студент</th>
-				{% for day in days %}
-				<th>{{ day }}</th>	
-				{% endfor %}
-			</tr>
-		</thead>
-		<tbody>	
-			{% for jd in journaldata %}
-				<tr>
-					<td>{{ pageindex|add:forloop.counter }}</td>
-					{# <td>{{ students.1 }}</td> #}
-					<td><a href="{% url "students_edit" jd.0 %}"> {{ jd.1 }}</a></td>
-					{% for day in jd.2 %}
-						<td><input type="checkbox" {% if day %}checked{% endif%}></input></td>	
-					{% endfor %}
-				</tr>	
-			{% endfor %}
-		</tbody>
-	</table>
-	<!-- Start pagination -->
-	{% if pages|length > 1 %}
-	<nav>
-	    <ul class="pagination">
-	        <li><a href="{% url "journal" %}?page=1&amp;month={{ month }}&amp;year={{ year }}">&laquo;</a></li>
-	        {% for page in pages %}
-	        	<li {% if current_page == page %}class="active"{% endif %}><a href="{% url "journal" %}?page={{ page }}&amp;month={{ month }}&amp;year={{ year }}">{{ page }}</a></li>	
-	        {% endfor %}
-	        <li><a href="{% url "journal" %}?page={{ pages|length }}&amp;month={{ month }}&amp;year={{ year }}">&raquo;</a></li>
-	    </ul>
-	</nav>
-	{% endif %}
-	<!-- End pagination -->
+    Скоро тут буде журнал відвідувань
 {% endblock content %}
